@@ -138,13 +138,19 @@ After deploying, run **Reload** in Command Palette. If the band does not appear 
 
 `-Platform ARM64` builds the Arm package. The first `-Sign` run creates a self-signed `CN=TaskDockDev` code-signing certificate in `Cert:\CurrentUser\My` and reuses it afterwards. Install the result as described in [Installation](#installation).
 
+Back up that certificate (with its private key) so a rebuilt machine can keep signing updates that existing installs accept; otherwise every user has to trust a new `.cer`:
+
+```powershell
+.\scripts\backup-signing-cert.ps1 -Destination <backup folder>   # prompts for a password, writes TaskDock-signing.pfx
+```
+
 ## Layout
 
 ```
 src/ClaudeTasks/        Command Palette extension (Dock band, flyout, list pages, settings, TaskStore)
 src/ClaudeTasks.Core/   Plain .NET library: todo.md parser, project discovery, active-project detection
 tests/ClaudeTasks.Tests xUnit tests for Core
-scripts/                dev-deploy.ps1, pack.ps1
+scripts/                dev-deploy.ps1, pack.ps1, backup-signing-cert.ps1, make-icons.py
 ```
 
 ## Known host issues
