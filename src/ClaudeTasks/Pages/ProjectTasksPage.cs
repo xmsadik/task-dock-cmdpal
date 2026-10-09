@@ -26,7 +26,7 @@ internal sealed partial class ProjectTasksPage : ListPage, IDisposable
         _settings = settings;
         _path = path;
 
-        Id = "ClaudeTasks.page.project." + path;
+        Id = "TaskDock.page.project." + path;
         Title = initialName;
         Name = initialName;
         Icon = new IconInfo("📁");

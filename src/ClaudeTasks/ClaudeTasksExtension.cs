@@ -9,7 +9,7 @@ using Microsoft.CommandPalette.Extensions;
 
 namespace ClaudeTasks;
 
-[Guid("FD30511C-ABE9-4A74-9C38-D1F08E1AF66B")]
+[Guid("693827AF-CDEF-4193-8279-C69D70515253")]
 public sealed partial class ClaudeTasksExtension : IExtension, IDisposable
 {
     private readonly ManualResetEvent _extensionDisposedEvent;

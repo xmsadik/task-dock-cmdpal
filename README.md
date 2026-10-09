@@ -1,8 +1,8 @@
-# Claude Tasks for Command Palette
+# Task Dock for Claude Code
 
 A PowerToys Command Palette extension that puts the progress of your local Claude Code projects in the **Dock**, read from each project's `tasks/todo.md`.
 
-> Unofficial community project. Not affiliated with or endorsed by Anthropic or Microsoft.
+> Unofficial community project. Not affiliated with or endorsed by Anthropic or Microsoft. Claude and Claude Code are trademarks of Anthropic, PBC; they are used here only to say which tool this extension works with.
 
 - **In the Dock:** overall progress across all projects, e.g. `📋 78%  9 projects · 48 open` (✅ when nothing is open).
 - **Click it:** a table of every project (progress bar, %, done/total, last update) and the open tasks of the project you're working on right now, grouped by section.
@@ -53,16 +53,16 @@ Standard Markdown task lists:
 
 ### 2. Download
 
-From the [latest release](https://github.com/xmsadik/claude-tasks-cmdpal/releases/latest) download:
-- `ClaudeTasksDev.cer`
-- the package for your CPU: `ClaudeTasks_<version>_x64.msix` (Intel/AMD) or `ClaudeTasks_<version>_arm64.msix` (Arm, e.g. Snapdragon). Not sure? Run `$env:PROCESSOR_ARCHITECTURE` in PowerShell: `AMD64` → x64, `ARM64` → arm64.
+From the [latest release](https://github.com/xmsadik/task-dock-cmdpal/releases/latest) download:
+- `TaskDockDev.cer`
+- the package for your CPU: `TaskDock_<version>_x64.msix` (Intel/AMD) or `TaskDock_<version>_arm64.msix` (Arm, e.g. Snapdragon). Not sure? Run `$env:PROCESSOR_ARCHITECTURE` in PowerShell: `AMD64` → x64, `ARM64` → arm64.
 
 ### 3. Trust the certificate (once per machine)
 
 The package is signed with a self-signed certificate, so Windows has to be told to trust it. In **PowerShell as Administrator**, in the download folder:
 
 ```powershell
-Import-Certificate .\ClaudeTasksDev.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople
+Import-Certificate .\TaskDockDev.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople
 ```
 
 ### 4. Install
@@ -70,14 +70,14 @@ Import-Certificate .\ClaudeTasksDev.cer -CertStoreLocation Cert:\LocalMachine\Tr
 In a normal PowerShell window (or double-click the `.msix` and choose *Install*):
 
 ```powershell
-Add-AppxPackage .\ClaudeTasks_0.1.0.0_x64.msix
+Add-AppxPackage .\TaskDock_<version>_x64.msix
 ```
 
 ### 5. Show it in the Dock
 
 1. Open Command Palette and run **Reload** so it picks up the new extension.
-2. The *Claude Tasks* band usually appears in the Dock by itself. If it doesn't, search for **Claude Tasks** in Command Palette, open its context menu and run **Pin to Dock** (choose the side you like, e.g. *Right*).
-3. Click the band for the summary; **Browse all tasks** opens the full list. Settings: search **Claude Tasks** → *Settings*.
+2. The *Task Dock* band usually appears in the Dock by itself. If it doesn't, search for **Task Dock** in Command Palette, open its context menu and run **Pin to Dock** (choose the side you like, e.g. *Right*).
+3. Click the band for the summary; **Browse all tasks** opens the full list. Settings: search **Task Dock** → *Settings*.
 
 ### Update
 
@@ -86,9 +86,17 @@ Download the newer `.msix` and run `Add-AppxPackage` again; the certificate step
 ### Uninstall
 
 ```powershell
-Get-AppxPackage ClaudeTasks | Remove-AppxPackage
+Get-AppxPackage TaskDock | Remove-AppxPackage
 # optional, as Administrator: remove the trusted certificate
-Get-ChildItem Cert:\LocalMachine\TrustedPeople | Where-Object Subject -eq 'CN=ClaudeTasksDev' | Remove-Item
+Get-ChildItem Cert:\LocalMachine\TrustedPeople | Where-Object Subject -eq 'CN=TaskDockDev' | Remove-Item
+```
+
+### Upgrading from 0.1.x ("Claude Tasks")
+
+Version 0.2 renamed the extension and changed its package identity, so Windows treats it as a new app. Remove the old one first; its settings are not carried over, and the Dock band has to be pinned again if it does not appear by itself:
+
+```powershell
+Get-AppxPackage ClaudeTasks | Remove-AppxPackage
 ```
 
 ### Troubleshooting
@@ -96,7 +104,7 @@ Get-ChildItem Cert:\LocalMachine\TrustedPeople | Where-Object Subject -eq 'CN=Cl
 | Symptom | Fix |
 |---|---|
 | `0x800B0109` / "the root certificate … is not trusted" on install | Step 3 was skipped or not run as Administrator. |
-| `0x80073CFB` / "a package with the same identity is already installed" | A development build is registered: `Get-AppxPackage ClaudeTasks \| Remove-AppxPackage`, then install again. |
+| `0x80073CFB` / "a package with the same identity is already installed" | A development build is registered: `Get-AppxPackage TaskDock \| Remove-AppxPackage`, then install again. |
 | Band doesn't appear | Check **Enable Dock** is on, run **Reload**, then use **Pin to Dock** as in step 5. |
 | Band shows `—` / *No tasks found* | No project with `tasks/todo.md` was found. Projects come from `~/.claude.json` and the **Extra scan roots** setting; add the parent folder of your projects there. |
 | A project is missing | It was never opened in Claude Code *from its own folder*. Add its parent folder to **Extra scan roots**. |
@@ -105,7 +113,7 @@ Get-ChildItem Cert:\LocalMachine\TrustedPeople | Where-Object Subject -eq 'CN=Cl
 
 ## Settings
 
-Command Palette → *Claude Tasks* → *Settings*:
+Command Palette → *Task Dock* → *Settings*:
 - **Refresh interval**: 30 sec, 1, 2, 5 min (default 1 min). Only changed `todo.md` files are re-read.
 - **Extra scan roots**: `;`-separated folders, environment variables allowed.
 - **Show completed**: show finished projects and tasks (default on).
@@ -125,10 +133,10 @@ After deploying, run **Reload** in Command Palette. If the band does not appear 
 ### MSIX package
 
 ```powershell
-.\scripts\pack.ps1 -Sign        # dist\...\ClaudeTasks_<ver>_x64.msix + dist\ClaudeTasksDev.cer
+.\scripts\pack.ps1 -Sign        # dist\...\TaskDock_<ver>_x64.msix + dist\TaskDockDev.cer
 ```
 
-`-Platform ARM64` builds the Arm package. The first `-Sign` run creates a self-signed `CN=ClaudeTasksDev` code-signing certificate in `Cert:\CurrentUser\My` and reuses it afterwards. Install the result as described in [Installation](#installation).
+`-Platform ARM64` builds the Arm package. The first `-Sign` run creates a self-signed `CN=TaskDockDev` code-signing certificate in `Cert:\CurrentUser\My` and reuses it afterwards. Install the result as described in [Installation](#installation).
 
 ## Layout
 
@@ -149,7 +157,7 @@ Running **Reload** in Command Palette works around both.
 
 ## See also
 
-[claude-usage-cmdpal](https://github.com/xmsadik/claude-usage-cmdpal): Claude subscription usage in the Dock.
+[Session Dock for Claude Code](https://github.com/xmsadik/session-dock-cmdpal): your live Claude Code sessions in the Dock.
 
 ## License
 

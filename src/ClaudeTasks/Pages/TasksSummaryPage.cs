@@ -27,9 +27,9 @@ internal sealed partial class TasksSummaryPage : ContentPage, IDisposable
         _store = store;
         _settings = settingsManager;
 
-        Id = "ClaudeTasks.page.summary";
-        Name = "Claude Tasks";
-        Title = "Claude Tasks";
+        Id = "TaskDock.page.summary";
+        Name = "Task Dock";
+        Title = "Task Dock";
         Icon = new IconInfo("📋");
 
         Commands =
@@ -59,7 +59,7 @@ internal sealed partial class TasksSummaryPage : ContentPage, IDisposable
         var now = DateTimeOffset.UtcNow;
         var sb = new StringBuilder();
 
-        sb.AppendLine("# Claude Tasks");
+        sb.AppendLine("# Claude Code tasks");
         sb.AppendLine();
 
         if (snapshot.Projects.Count == 0)

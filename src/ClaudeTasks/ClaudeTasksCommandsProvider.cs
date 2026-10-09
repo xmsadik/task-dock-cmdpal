@@ -17,8 +17,8 @@ public partial class ClaudeTasksCommandsProvider : CommandProvider
 
     public ClaudeTasksCommandsProvider()
     {
-        DisplayName = "Claude Tasks";
-        Id = "ClaudeTasks";
+        DisplayName = "Task Dock";
+        Id = "TaskDock";
         Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
 
         _store = new TaskStore(_settingsManager);
@@ -37,7 +37,7 @@ public partial class ClaudeTasksCommandsProvider : CommandProvider
         _band = new TasksBand(_store, _summaryPage);
 
         // Command.Id must be non-empty or the host silently drops the band.
-        _dockBand = new WrappedDockItem([_band], "ClaudeTasks.dock.tasks", "Claude Tasks");
+        _dockBand = new WrappedDockItem([_band], "TaskDock.dock.tasks", "Task Dock");
 
         Settings = _settingsManager.Settings;
     }

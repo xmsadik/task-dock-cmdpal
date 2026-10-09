@@ -9,7 +9,7 @@ internal sealed partial class SettingsManager : JsonSettingsManager
     private const string DefaultRefreshSeconds = "60";
     private const string DefaultExtraScanRoots = "%USERPROFILE%";
 
-    private static readonly string _namespace = "ClaudeTasks";
+    private static readonly string _namespace = "TaskDock";
 
     private static string Namespaced(string propertyName) => $"{_namespace}.{propertyName}";
 
@@ -67,7 +67,7 @@ internal sealed partial class SettingsManager : JsonSettingsManager
 
     internal static string SettingsJsonPath()
     {
-        var directory = Utilities.BaseSettingsPath("ClaudeTasks");
+        var directory = Utilities.BaseSettingsPath("TaskDock");
         Directory.CreateDirectory(directory);
 
         return Path.Combine(directory, "settings.json");

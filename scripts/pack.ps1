@@ -5,11 +5,11 @@
 .DESCRIPTION
   Output goes to dist\. Without -Sign the package is unsigned and only useful for
   inspection. With -Sign, a code-signing certificate whose subject matches the
-  manifest Publisher (CN=ClaudeTasksDev) is created in CurrentUser\My on first use,
-  its public part is exported to dist\ClaudeTasksDev.cer, and the MSIX is signed.
+  manifest Publisher (CN=TaskDockDev) is created in CurrentUser\My on first use,
+  its public part is exported to dist\TaskDockDev.cer, and the MSIX is signed.
 
   To install a self-signed package, the target machine must trust the .cer once
-  (elevated):  Import-Certificate dist\ClaudeTasksDev.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople
+  (elevated):  Import-Certificate dist\TaskDockDev.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople
 
 .PARAMETER Platform
   x64 or ARM64.
@@ -24,7 +24,7 @@ $ErrorActionPreference = 'Stop'
 $root    = Resolve-Path (Join-Path $PSScriptRoot '..')
 $project = Join-Path $root 'src\ClaudeTasks\ClaudeTasks.csproj'
 $dist    = Join-Path $root 'dist'
-$subject = 'CN=ClaudeTasksDev'
+$subject = 'CN=TaskDockDev'
 
 dotnet publish $project -c Release -p:Platform=$Platform -p:PublishProfile=win-$($Platform.ToLower()) `
   -p:GenerateAppxPackageOnBuild=true -p:AppxPackageSigningEnabled=false -p:AppxPackageDir="$dist\"
@@ -33,6 +33,11 @@ if ($LASTEXITCODE -ne 0) { throw "Publish failed ($LASTEXITCODE)" }
 $msix = Get-ChildItem $dist -Recurse -Filter "*_$Platform.msix" |
   Sort-Object LastWriteTime -Descending | Select-Object -First 1
 if (-not $msix) { throw "No MSIX produced under $dist" }
+
+# The tooling names the file after the project (ClaudeTasks_...); publish it under the product name.
+if ($msix.Name -like 'ClaudeTasks_*') {
+  $msix = Move-Item $msix.FullName (Join-Path $msix.DirectoryName ($msix.Name -replace '^ClaudeTasks_', 'TaskDock_')) -Force -PassThru
+}
 
 if ($Sign) {
   $cert = Get-ChildItem Cert:\CurrentUser\My |
@@ -43,7 +48,7 @@ if ($Sign) {
       -TextExtension @('2.5.29.19={text}')
     Write-Host "Created signing certificate $($cert.Thumbprint)"
   }
-  Export-Certificate -Cert $cert -FilePath (Join-Path $dist 'ClaudeTasksDev.cer') | Out-Null
+  Export-Certificate -Cert $cert -FilePath (Join-Path $dist 'TaskDockDev.cer') | Out-Null
 
   $signtool = Get-ChildItem "$env:USERPROFILE\.nuget\packages\microsoft.windows.sdk.buildtools" -Recurse -Filter signtool.exe |
     Where-Object { $_.DirectoryName -like '*\x64' } | Select-Object -First 1

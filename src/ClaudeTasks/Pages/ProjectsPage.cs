@@ -26,8 +26,8 @@ internal sealed partial class ProjectsPage : ListPage, IDisposable
         _store = store;
         _settings = settings;
 
-        Id = "ClaudeTasks.page.projects";
-        Title = "Claude Tasks";
+        Id = "TaskDock.page.projects";
+        Title = "Task Dock";
         Name = "Browse all tasks";
         Icon = new IconInfo("📋");
         PlaceholderText = "Search projects";

@@ -34,7 +34,7 @@ internal sealed partial class TasksBand : ListItem, IDisposable
         {
             Title = "--%";
             Icon = new IconInfo("📋");
-            Subtitle = "Claude Tasks";
+            Subtitle = "Task Dock";
             return;
         }
 
